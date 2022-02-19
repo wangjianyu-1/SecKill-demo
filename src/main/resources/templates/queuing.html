@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- jquery -->
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
+    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- layer -->
+    <script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+    <!-- common.js -->
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+</head>
+<body>
+    <p th:text="${errmsg}"></p>
+    <input th:value="${goodsId}" id="goodsId">
+</body>
+
+</html>
+<script>
+
+    function getResult(goodsId){
+        g_showLoading();
+        $.ajax({
+            url:"/seckill/result",
+            type:"GET",
+            data:{
+                goodsId:goodsId
+            },
+            success:function (data) {
+                if(data.code==200){
+                    result = data.obj;
+
+                    if(result<0){
+                        alert("秒杀失败")
+                    }else if(result<0){
+                        alert("秒杀失败")
+                    }else if(result==0){
+                        setTimeout(function () {
+                            getResult(goodsId);
+                        },50)
+                    }else{
+                        confirm("秒杀成功,查看订单？",{btn:["确定","取消"]},
+                            function () {
+                                alert(123);
+                                // var url = "/order/oderDetail/"+result+"/"+goodsId;
+                                // alert(url);
+                                //window.location.href=url;
+                            },
+                            function () {
+                                layer.close();
+                            }
+                        )
+                    }
+                }
+            },
+            error:function () {
+                alert("客户端请求错误")
+            }
+
+        })
+    }
+
+    $(function () {
+        var goodsId = $("#goodsId").val();
+        alert(goodsId);
+        getResult(goodsId);
+
+    })
+</script>
